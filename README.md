@@ -1,1 +1,3 @@
-# algorithm-datastructure
+# SimpleSTL
+
+标准模板库的一些简单实现，主要是把数据类型简化成了int型

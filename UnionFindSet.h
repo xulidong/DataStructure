@@ -1,25 +1,59 @@
-/* ²¢²é¼¯ */
-
+// å¹¶æŸ¥é›†
 #ifndef UNION_FIND_SET_H
 #define UNION_FIND_SET_H
 
-class UnionFindSet {
+#include <vector>
+
+using namespace std;
+
+class UnionFind {
 public:
-	UnionFindSet(unsigned int capacity);
-	~UnionFindSet();
+    UnionFind(vector<vector<int>>& grid) {
+        count = 0;
+        int row = grid.size();
+        int col = grid[0].size();
+        count = row * col;
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < col; ++j) {
+                parent.push_back(i * col + j);
+                rank.push_back(1);
+            }
+        }
+    }
 
+    int find(int i) {
+        if (parent[i] != i) {
+            // è·¯å¾„å‹ç¼©
+            parent[i] = find(parent[i]);
+        }
+        return parent[i];
+    }
 
-	// ²éÕÒvËùÊô¼¯ºÏµÄ¸ú½áµã
-	int find(int v);
-	
-	// ºÏ²¢v1ºÍv2ËùÊôµÄ¼¯ºÏ
-	void merge(int v1, int v2);
+    void unite(int x, int y) {
+        int rootx = find(x);
+        int rooty = find(y);
+        if (rootx != rooty) {
+            // æŒ‰ç§©åˆå¹¶ï¼ˆå°æ ‘åˆå¹¶åˆ°å¤§æ ‘ï¼‰
+            if (rank[rootx] < rank[rooty]) {
+                swap(rootx, rooty);
+            }
+            parent[rooty] = rootx;
 
-	// ¼ì²âv1ºÍv2ÊÇ·ñÊôÓÚÍ¬Ò»¸ö¼¯ºÏ
-	bool isSame(int v1, int v2);
+            if (rank[rootx] == rank[rooty]) {
+                rank[rootx] += 1;
+            }
+            --count;
+        }
+    }
+
+    int getCount() const {
+        return count;
+    }
+
 private:
-	int* m_parents; // ¼ÇÂ¼¸¸½ÚµãµÄÏÂ±ê
-	int* m_depth; // ¼ÇÂ¼Ã¿¸ö¸¸½ÚµãµÄÉî¶È
+    vector<int> parent;// çˆ¶èŠ‚ç‚¹
+    vector<int> rank;// æ¯ä¸ªé›†åˆçš„æ·±åº¦
+    int count; // é›†åˆæ•°é‡
 };
 
 #endif
